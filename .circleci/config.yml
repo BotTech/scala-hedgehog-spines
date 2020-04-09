@@ -149,23 +149,14 @@ commands:
         type: boolean
         default: false
     steps:
-      - run:
-          name: Remove previous test reports and logs
-          command: rm -rf target/test-reports target/logs
       - steps: << parameters.test >>
-      - run:
-          name: Copy all test reports
-          command: find . -type d -name test-reports -exec cp -r '{}' target/ \;
       - store_test_results:
-          path: target/test-reports
+          path: tests/target/test-reports
       - store_artifacts:
-          path: target/test-reports
+          path: tests/target/test-reports
           destination: << parameters.report_artifact_dir >>
       - store_artifacts:
-          path: target/logs
-          destination: << parameters.logs_artifact_dir >>
-      - store_artifacts:
-          path: target/<< parameters.scala_version >>/scoverage-report
+          path: target/scala-<< parameters.scala_version >>/scoverage-report
           destination: << parameters.report_artifact_dir >>
           when: << parameters.save_coverage >>
 
