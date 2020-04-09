@@ -16,6 +16,7 @@ import scala.util.Try
 
 object UriGenerators {
 
+  private val IPv6Bytes         = 16
   private val MaxSchemeLength   = 100
   private val MaxHostLength     = 100
   private val MaxPort           = 65535
@@ -79,7 +80,7 @@ object UriGenerators {
 
   def genIPv6Host: Gen[IPv6Host] =
     for {
-      bytes <- Gen.bytes(Range.singleton(16))
+      bytes <- Gen.bytes(Range.singleton(IPv6Bytes))
     } yield IPv6Host(bytes)
 
   private def genRegName: Gen[String] =

@@ -1,5 +1,6 @@
 package com.lightbend.hedgehog.macros
 
+import org.scalactic.TripleEquals._
 import scala.annotation.tailrec
 import scala.reflect.macros.blackbox
 
@@ -63,7 +64,7 @@ object CharacterMacros {
             case None => start -> hi :: acc
             case Some(end) =>
               val nextAcc = start -> (end - 1).toChar :: acc
-              if (end == hi) nextAcc
+              if (end === hi) nextAcc
               else loop((end + 1).toChar, nextAcc)
           }
       }

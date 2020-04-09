@@ -9,6 +9,8 @@ import hedgehog._
 
 import scala.util.Try
 
+// scalastyle:off number.of.methods
+
 object URIGenerators {
 
   // FIXME: Investigate why if these are all 1 then why are there discards?
@@ -272,7 +274,7 @@ object URIGenerators {
   def genInvalidURI: Gen[String] =
     genAnyUnicodeString.filter(s => Try(new URI(s)).isFailure)
 
-  @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments"))
+  @SuppressWarnings(Array("org.wartremover.warts.DefaultArguments", "scalafix:DisableSyntax.defaultArgs"))
   def copyURI(
       uri: URI
     )(
@@ -295,3 +297,5 @@ object URIGenerators {
   private def genRepeat(gen: Gen[String], min: Int, max: Int) =
     gen.list(Range.linear(min, max)).map(_.mkString)
 }
+
+// scalastyle:on number.of.methods

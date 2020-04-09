@@ -20,8 +20,11 @@ lazy val akka = project
   .settings(
     libraryDependencies ++= Seq(
       akkaActor,
-      akkaActorTestkit,
-      hedgehogCore
+      akkaTestkit,
+      Dependencies.config,
+      hedgehogCore,
+      scalactic,
+      scalaReflect(scalaVersion.value)
     )
   )
 
@@ -29,9 +32,12 @@ lazy val `akka-http` = project
   .dependsOn(akka, core, runner)
   .settings(
     libraryDependencies ++= Seq(
-      akkaHttp,
+      akkaActor,
+      akkaHttpCore,
       akkaStream,
-      hedgehogCore
+      hedgehogCore,
+      scalactic,
+      scalaReflect(scalaVersion.value)
     )
   )
 
@@ -39,8 +45,8 @@ lazy val cats = project
   .dependsOn(core)
   .settings(
     libraryDependencies ++= Seq(
-      Dependencies.cats,
-      catsEffect
+      catsEffect,
+      hedgehogCore
     )
   )
 
@@ -58,7 +64,7 @@ lazy val core = project
 lazy val macros = project
   .settings(
     libraryDependencies ++= Seq(
-      scalaCompiler(scalaVersion.value),
+      scalactic,
       scalaReflect(scalaVersion.value)
     )
   )
