@@ -15,7 +15,8 @@ lazy val root = (project in file("."))
     tests
   )
   .settings(
-    coverageMinimum := 0
+    coverageMinimum := 60,
+    skip in publish := true
   )
 
 lazy val akka = project
