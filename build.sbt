@@ -14,6 +14,9 @@ lazy val root = (project in file("."))
     testkit,
     tests
   )
+  .settings(
+    coverageMinimum := 0
+  )
 
 lazy val akka = project
   .dependsOn(core, runner)
@@ -25,7 +28,8 @@ lazy val akka = project
       hedgehogCore,
       scalactic,
       scalaReflect(scalaVersion.value)
-    )
+    ),
+    coverageMinimum := 0
   )
 
 lazy val `akka-http` = project
@@ -38,7 +42,8 @@ lazy val `akka-http` = project
       hedgehogCore,
       scalactic,
       scalaReflect(scalaVersion.value)
-    )
+    ),
+    coverageMinimum := 0
   )
 
 lazy val cats = project
@@ -47,7 +52,8 @@ lazy val cats = project
     libraryDependencies ++= Seq(
       catsEffect,
       hedgehogCore
-    )
+    ),
+    coverageMinimum := 0
   )
 
 lazy val core = project
@@ -58,7 +64,7 @@ lazy val core = project
         hedgehogCore,
         scalactic
       ),
-    coverageMinimum := 99
+    coverageMinimum := 94
   )
 
 lazy val macros = project
