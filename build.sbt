@@ -1,0 +1,118 @@
+import Dependencies._
+import Dependencies.Testing._
+
+lazy val root = (project in file("."))
+  .aggregate(
+    akka,
+    `akka-http`,
+    cats,
+    core,
+    macros,
+    runner,
+    sbtTestFramework,
+    scalamock,
+    testkit,
+    tests
+  )
+
+lazy val akka = project
+  .dependsOn(core, runner)
+  .settings(
+    libraryDependencies ++= Seq(
+      akkaActor,
+      akkaActorTestkit,
+      hedgehogCore
+    )
+  )
+
+lazy val `akka-http` = project
+  .dependsOn(akka, core, runner)
+  .settings(
+    libraryDependencies ++= Seq(
+      akkaHttp,
+      akkaStream,
+      hedgehogCore
+    )
+  )
+
+lazy val cats = project
+  .dependsOn(core)
+  .settings(
+    libraryDependencies ++= Seq(
+      Dependencies.cats,
+      catsEffect
+    )
+  )
+
+lazy val core = project
+  .dependsOn(macros)
+  .settings(
+    libraryDependencies ++=
+      Seq(
+        hedgehogCore,
+        scalactic
+      ),
+    coverageMinimum := 99
+  )
+
+lazy val macros = project
+  .settings(
+    libraryDependencies ++= Seq(
+      scalaCompiler(scalaVersion.value),
+      scalaReflect(scalaVersion.value)
+    )
+  )
+
+lazy val runner = project
+  .settings(
+    libraryDependencies ++=
+      Seq(
+        hedgehogCore,
+        hedgehogRunner,
+        scalactic,
+        scopt
+      ),
+    coverageMinimum := 0
+  )
+
+lazy val sbtTestFramework = (project in file("sbt"))
+  .dependsOn(runner)
+  .settings(
+    libraryDependencies ++=
+      Seq(
+        hedgehogCore,
+        hedgehogRunner,
+        hedgehogSbt,
+        sbtTest
+      ),
+    coverageMinimum := 0
+  )
+
+lazy val scalamock = project
+  .dependsOn(runner, testkit)
+  .settings(
+    libraryDependencies ++=
+      Seq(
+        hedgehogCore,
+        hedgehogRunner,
+        scalaMock
+      ),
+    coverageMinimum := 0
+  )
+
+lazy val testkit = project
+  .dependsOn(core)
+  .settings(
+    libraryDependencies ++=
+      Seq(
+        hedgehogCore,
+        hedgehogRunner
+      ),
+    coverageMinimum := 0
+  )
+
+lazy val tests = project
+  .dependsOn(sbtTestFramework % Test, scalamock % Test)
+  .settings(
+    Test / javaOptions := Seq.empty
+  )
