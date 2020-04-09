@@ -53,7 +53,7 @@ object CommonSettingsPlugin extends AutoPlugin {
       testProjectSettings
 
   private def publishSettings = Seq(
-    moduleName := s"scala-hedgehog-${moduleName.value}",
+    moduleName := s"hedgehog-${moduleName.value}",
     publishMavenStyle := true,
     publishTo := sonatypePublishToBundle.value,
     usePgpKeyHex("0F8830E47FC345D4587D1CC9FE4B9D2E141FF3AC")
