@@ -1,25 +1,37 @@
+import com.jsuereth.sbtpgp.SbtPgp.autoImport.usePgpKeyHex
 import sbt.Keys._
 import sbt._
 import sbtdynver.DynVerPlugin.autoImport.{dynver, dynverGitDescribeOutput}
+import xerial.sbt.Sonatype.SonatypeKeys.sonatypePublishToBundle
 
 object CommonSettingsPlugin extends AutoPlugin {
 
   override def trigger: PluginTrigger = allRequirements
 
   override def buildSettings: Seq[Def.Setting[_]] = Seq(
-    organization := "com.lightbend",
+    organization := "com.lightbend.hedgehog",
     version := dynverGitDescribeOutput.value.mkVersion(versionFmt, "latest"),
     dynver := sbtdynver.DynVer
       .getGitDescribeOutput(new java.util.Date)
       .mkVersion(versionFmt, "latest"),
     organizationName := "Lightbend Inc.",
-    organizationHomepage := Some(url("https://github.com/lightbend/scala-hedgehog-spines")),
+    organizationHomepage := Some(url("https://www.lightbend.com")),
+    homepage := Some(url("https://github.com/lightbend/scala-hedgehog-spines")),
     //noinspection ScalaStyle
     startYear := Some(2020),
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/lightbend/scala-hedgehog-spines"),
         "scm:git@github.com:lightbend/scala-hedgehog-spines.git"
+      )
+    ),
+    licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    developers := List(
+      Developer(
+        id = "steinybot",
+        name = "Jason Pickens",
+        email = "jason.pickens@lightbend.com",
+        url = url("https://github.com/steinybot")
       )
     ),
     scalaVersion := "2.13.1",
@@ -36,8 +48,16 @@ object CommonSettingsPlugin extends AutoPlugin {
   }
 
   override def projectSettings: Seq[Def.Setting[_]] =
-    addCompilerPlugin(Dependencies.CompilerPlugins.kindProjector) ++
+    publishSettings ++
+      addCompilerPlugin(Dependencies.CompilerPlugins.kindProjector) ++
       testProjectSettings
+
+  private def publishSettings = Seq(
+    moduleName := s"scala-hedgehog-${moduleName.value}",
+    publishMavenStyle := true,
+    publishTo := sonatypePublishToBundle.value,
+    usePgpKeyHex("0F8830E47FC345D4587D1CC9FE4B9D2E141FF3AC")
+  )
 
   private def testProjectSettings =
     Defaults.itSettings ++ Seq(

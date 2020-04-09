@@ -14,5 +14,6 @@ addSbtPlugin("net.vonbuchholtz" % "sbt-dependency-check"      % "2.0.0")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1")
 
 // Distribution plugins.
-addSbtPlugin("com.dwijnand"     % "sbt-dynver"          % "4.0.0")
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.7.0")
+addSbtPlugin("com.dwijnand"   % "sbt-dynver"   % "4.0.0")
+addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.2")
+addSbtPlugin("com.jsuereth"   % "sbt-pgp"      % "2.0.0")

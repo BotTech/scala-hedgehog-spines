@@ -167,6 +167,21 @@ commands:
       - checkout
       - setup_sbt
 
+  setup_gpg:
+    description: Sets up GnuPG.
+    parameters:
+      pgp_secret:
+        description: The name of the environment variable containing the PGP secret key.
+        type: env_var_name
+        default: PGP_SECRET
+    steps:
+      - run:
+          name: Show GnuPG version.
+          command: gpg --version
+      - run:
+          name: Import PGP key.
+          command: echo "${<< parameters.pgp_secret >>}" | base64 --decode | gpg --import
+
 jobs:
 
   compile:
@@ -208,6 +223,15 @@ jobs:
                 name: Run unit tests
                 command: sbt coverage test coverageAggregate
 
+  publish:
+    executor: jdk
+    steps:
+      - setup_all
+      - setup_gpg
+      - run:
+          name: Releast to Sonatype.
+          command: sbt sonatypeBundleRelease
+
 workflows:
   version: 2
 
@@ -223,3 +247,8 @@ workflows:
           <<: *all_tags
           requires:
             - compile
+      - publish:
+          <<: *publish_tagged
+          requires:
+            - checks
+            - unit_tests
