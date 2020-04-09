@@ -173,20 +173,15 @@ commands:
     description: Performs the setup boilerplate steps.
     steps:
       - *attach_workspace
+      - checkout
       - setup_sbt
 
 jobs:
 
-  setup:
-    executor: jdk
-    steps:
-      - checkout
-      - setup_sbt
-
   compile:
     executor: jdk
     steps:
-      - setup_sbt
+      - setup_all
       - run:
           name: Compile SBT projects
           command: sbt compile
@@ -227,12 +222,8 @@ workflows:
 
   integration:
     jobs:
-      - setup:
-          <<: *all_tags
       - compile:
           <<: *all_tags
-          requires:
-            - setup
       - checks:
           <<: *all_tags
           requires:
