@@ -1,0 +1,243 @@
+version: 2.1
+
+references:
+
+  # A bunch of these ideas were taken from https://github.com/circleci/frontend/blob/master/.circleci/config.yml.
+
+  working_dir: &working_dir
+    '~/scala-hedgehog-spines'
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *working_dir
+
+  scala_version: &scala_version
+    scala_version:
+      description: The version of Scala.
+      type: string
+      default: "2.13"
+
+  report_artifact_dir: &report_artifact_dir
+    report_artifact_dir:
+      description: The directory to place the reports.
+      type: string
+      default: reports
+
+  # Filtering based on a tag only works if all jobs have a tag filter.
+  # See https://circleci.com/docs/2.0/configuration-reference/#tags
+  all_tags: &all_tags
+    filters:
+      tags:
+        only: /.*/
+
+  publish_tagged: &publish_tagged
+    filters:
+      tags:
+        only: /^v.*/
+      branches:
+        ignore: /.*/
+
+  publish_master: &publish_master
+    filters:
+      branches:
+        only: master
+
+executors:
+
+  base:
+    docker:
+      - image: cimg/base:stable
+    working_directory: *working_dir
+    
+  jdk:
+    docker:
+      - image: circleci/openjdk:13.0.2-jdk-buster
+    working_directory: *working_dir
+
+commands:
+
+  setup_sbt:
+    description: Setup SBT.
+    parameters:
+      version:
+        description: The version of SBT.
+        type: string
+        default: "1.3.9"
+    steps:
+      - restore_cache:
+          key: v1-sbt-installer-<< parameters.version >>-debian-{{ arch }}
+      - run:
+          name: Install SBT
+          command: |
+            if [ ! -f sbt-<< parameters.version >>.deb ]; then
+              curl -L -o sbt-<< parameters.version >>.deb https://dl.bintray.com/sbt/debian/sbt-<< parameters.version >>.deb
+            fi
+            sudo dpkg -i sbt-<< parameters.version >>.deb
+      - save_cache:
+          key: v1-sbt-installer-<< parameters.version >>-debian-{{ arch }}
+          paths: sbt-<< parameters.version >>.deb
+      - run:
+          name: Delete SBT installer
+          command: rm sbt-<< parameters.version >>.deb
+      - run:
+          name: Determine all SBT dependencies
+          command: |
+            if [ ! -f target/sbt-dependencies.txt ]; then
+              sbt saveAllDependencies
+              cp -p target/dependencies.txt target/sbt-dependencies.txt
+              next='project'
+              while [ -d "${next}" ] && [ ! -z "$( find "${next}" -mindepth 1 -maxdepth 1 -name '*.sbt' -type f )" ]; do
+                (
+                  cd "${next}"
+                  sbt saveAllDependencies
+                )
+                cat "${next}/target/dependencies.txt" >> target/sbt-dependencies.txt
+                next="${next}/project"
+              done
+            fi
+            echo "All SBT dependencies:"
+            cat target/sbt-dependencies.txt
+      - restore_cache:
+          keys:
+            - v1-sbt-cache-{{ arch }}-{{ checksum "target/sbt-dependencies.txt" }}
+            - v1-sbt-cache-{{ arch }}
+
+  check_dependencies:
+    description: Check dependencies.
+    parameters:
+      <<: *scala_version
+      <<: *report_artifact_dir
+    steps:
+      - run:
+          name: Run dependency checks
+          command: sbt allDependencyChecks
+      - store_test_results:
+          path: target/scala-<< parameters.scala_version >>
+      - store_artifacts:
+          path: target/scala-<< parameters.scala_version >>/dependency-check-report.html
+          destination: << parameters.report_artifact_dir >>/dependency-check-report.html
+
+  check_style:
+    description: Check code style.
+    parameters:
+      <<: *scala_version
+      <<: *report_artifact_dir
+    steps:
+      - run:
+          name: Run style checks
+          command: sbt allStyleChecks
+      - store_test_results:
+          path: target/scala-<< parameters.scala_version >>/scapegoat-report
+      - store_artifacts:
+          path: target/scala-<< parameters.scala_version >>/scapegoat-report
+          destination: << parameters.report_artifact_dir >>
+
+  run_tests:
+    description: Runs tests.
+    parameters:
+      <<: *report_artifact_dir
+      <<: *scala_version
+      test:
+        description: Steps to run the tests.
+        type: steps
+      logs_artifact_dir:
+        description: The directory to place the logs.
+        type: string
+        default: logs
+      save_coverage:
+        description: Whether to save coverage reports.
+        type: boolean
+        default: false
+    steps:
+      - run:
+          name: Remove previous test reports and logs
+          command: rm -rf target/test-reports target/logs
+      - steps: << parameters.test >>
+      - run:
+          name: Copy all test reports
+          command: find . -type d -name test-reports -exec cp -r '{}' target/ \;
+      - store_test_results:
+          path: target/test-reports
+      - store_artifacts:
+          path: target/test-reports
+          destination: << parameters.report_artifact_dir >>
+      - store_artifacts:
+          path: target/logs
+          destination: << parameters.logs_artifact_dir >>
+      - store_artifacts:
+          path: target/<< parameters.scala_version >>/scoverage-report
+          destination: << parameters.report_artifact_dir >>
+          when: << parameters.save_coverage >>
+
+  setup_all:
+    description: Performs the setup boilerplate steps.
+    steps:
+      - *attach_workspace
+      - setup_sbt
+
+jobs:
+
+  setup:
+    executor: jdk
+    steps:
+      - checkout
+      - setup_sbt
+
+  compile:
+    executor: jdk
+    steps:
+      - setup_sbt
+      - run:
+          name: Compile SBT projects
+          command: sbt compile
+      - persist_to_workspace:
+          root: *working_dir
+          paths:
+            - .
+
+  checks:
+    executor: jdk
+    steps:
+      - setup_all
+      - check_dependencies
+      - check_style
+      # Save the cache here because the dependency checks stores the NVD database in a
+      # data directory alongside the JAR.
+      - save_cache:
+          key: v1-sbt-cache-{{ arch }}-{{ checksum "target/sbt-dependencies.txt" }}
+          paths:
+            - "~/.ivy2/cache"
+            - "~/.sbt"
+            - "~/.m2"
+            - "~/.coursier"
+            - "~/.cache/coursier"
+
+  unit_tests:
+    executor: jdk
+    steps:
+      - setup_all
+      - run_tests:
+          test:
+            - run:
+                name: Run unit tests
+                command: sbt coverage test coverageAggregate
+
+workflows:
+  version: 2
+
+  integration:
+    jobs:
+      - setup:
+          <<: *all_tags
+      - compile:
+          <<: *all_tags
+          requires:
+            - setup
+      - checks:
+          <<: *all_tags
+          requires:
+            - compile
+      - unit_tests:
+          <<: *all_tags
+          requires:
+            - compile
