@@ -180,7 +180,7 @@ commands:
           command: gpg --version
       - run:
           name: Import PGP key.
-          command: echo "${<< parameters.pgp_secret >>}" | base64 --decode | gpg --import
+          command: GPG_TTY="$(tty)" echo "${<< parameters.pgp_secret >>}" | base64 --decode | gpg --import
 
 jobs:
 
@@ -256,9 +256,9 @@ workflows:
           requires:
             - checks
             - unit_tests
-#      - publish:
-#          name: Publish master
-#          <<: *publish_master
-#          requires:
-#            - checks
-#            - unit_tests
+      - publish:
+          name: Publish master
+          <<: *publish_master
+          requires:
+            - checks
+            - unit_tests
