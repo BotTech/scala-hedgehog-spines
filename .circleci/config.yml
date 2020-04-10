@@ -228,9 +228,12 @@ jobs:
     steps:
       - setup_all
       - setup_gpg
+#      - run:
+#          name: Release to Sonatype.
+#          command: sbt sonatypeBundleRelease
       - run:
-          name: Releast to Sonatype.
-          command: sbt sonatypeBundleRelease
+          name: Publish and release to Bintray.
+          command: sbt publish
 
 workflows:
   version: 2

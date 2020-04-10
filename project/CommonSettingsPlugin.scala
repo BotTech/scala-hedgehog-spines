@@ -1,3 +1,4 @@
+import bintray.BintrayKeys._
 import com.jsuereth.sbtpgp.SbtPgp.autoImport.usePgpKeyHex
 import sbt.Keys._
 import sbt._
@@ -55,8 +56,9 @@ object CommonSettingsPlugin extends AutoPlugin {
   private def publishSettings = Seq(
     name := s"spines-${name.value}",
     publishMavenStyle := true,
-    publishTo := sonatypePublishToBundle.value,
-    usePgpKeyHex("0F8830E47FC345D4587D1CC9FE4B9D2E141FF3AC")
+    //publishTo := sonatypePublishToBundle.value,
+    usePgpKeyHex("0F8830E47FC345D4587D1CC9FE4B9D2E141FF3AC"),
+    bintrayOrganization := Some("lightbend")
   )
 
   private def testProjectSettings =
