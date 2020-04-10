@@ -180,7 +180,9 @@ commands:
           command: gpg --version
       - run:
           name: Import PGP key.
-          command: GPG_TTY="$(tty)" echo "${<< parameters.pgp_secret >>}" | base64 --decode | gpg --import
+          command: |
+            export GPG_TTY="$(tty)"
+            echo "${<< parameters.pgp_secret >>}" | base64 --decode | gpg --import
 
 jobs:
 
