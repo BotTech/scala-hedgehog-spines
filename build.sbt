@@ -9,7 +9,7 @@ lazy val root = (project in file("."))
     core,
     macros,
     runner,
-    sbtTestFramework,
+    sbtFramework,
     scalamock,
     testkit,
     tests
@@ -88,7 +88,7 @@ lazy val runner = project
     coverageMinimum := 0
   )
 
-lazy val sbtTestFramework = (project in file("sbt"))
+lazy val sbtFramework = Project(id = "sbt", base = file("sbt"))
   .dependsOn(runner)
   .settings(
     libraryDependencies ++=
@@ -125,7 +125,8 @@ lazy val testkit = project
   )
 
 lazy val tests = project
-  .dependsOn(sbtTestFramework % Test, scalamock % Test)
+  .dependsOn(sbtFramework % Test, scalamock % Test)
   .settings(
+    skip in publish := true,
     Test / javaOptions := Seq.empty
   )

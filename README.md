@@ -2,6 +2,22 @@
 
 This project contains customisations and extensions to [Scala Hedgehog][].
 
+## Setup
+
+```sbt
+libraryDependencies ++= Seq(
+  "com.lightbend.hedgehog" %% "hedgehog-akka"      % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-akka-http" % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-cats"      % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-core"      % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-macros"    % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-runner"    % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-sbt"       % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-scalamock" % "0.1.0",
+  "com.lightbend.hedgehog" %% "hedgehog-testkit"   % "0.1.0"
+)
+```
+
 ## Runners
 
 The built in runner in Hedgehog is very primitive ([their words] not ours).

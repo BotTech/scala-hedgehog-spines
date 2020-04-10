@@ -25,7 +25,7 @@ object CommonSettingsPlugin extends AutoPlugin {
         "scm:git@github.com:lightbend/scala-hedgehog-spines.git"
       )
     ),
-    licenses := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     developers := List(
       Developer(
         id = "steinybot",
@@ -53,7 +53,7 @@ object CommonSettingsPlugin extends AutoPlugin {
       testProjectSettings
 
   private def publishSettings = Seq(
-    moduleName := s"hedgehog-${moduleName.value}",
+    name := s"hedgehog-${name.value}",
     publishMavenStyle := true,
     publishTo := sonatypePublishToBundle.value,
     usePgpKeyHex("0F8830E47FC345D4587D1CC9FE4B9D2E141FF3AC")

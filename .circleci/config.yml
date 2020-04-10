@@ -248,7 +248,14 @@ workflows:
           requires:
             - compile
       - publish:
+          name: Publish tagged
           <<: *publish_tagged
           requires:
             - checks
             - unit_tests
+#      - publish:
+#          name: Publish master
+#          <<: *publish_master
+#          requires:
+#            - checks
+#            - unit_tests
