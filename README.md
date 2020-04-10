@@ -6,15 +6,15 @@ This project contains customisations and extensions to [Scala Hedgehog][].
 
 ```sbt
 libraryDependencies ++= Seq(
-  "com.lightbend.hedgehog" %% "hedgehog-akka"      % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-akka-http" % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-cats"      % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-core"      % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-macros"    % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-runner"    % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-sbt"       % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-scalamock" % "0.1.0",
-  "com.lightbend.hedgehog" %% "hedgehog-testkit"   % "0.1.0"
+  "com.lightbend.hedgehog" %% "spines-akka"      % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-akka-http" % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-cats"      % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-core"      % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-macros"    % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-runner"    % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-sbt"       % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-scalamock" % "0.1.0",
+  "com.lightbend.hedgehog" %% "spines-testkit"   % "0.1.0"
 )
 ```
 
