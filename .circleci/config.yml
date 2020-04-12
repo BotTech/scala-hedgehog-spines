@@ -229,7 +229,7 @@ jobs:
     executor: jdk
     steps:
       - setup_all
-      - setup_gpg
+#      - setup_gpg
 #      - run:
 #          name: Release to Sonatype.
 #          command: sbt sonatypeBundleRelease
