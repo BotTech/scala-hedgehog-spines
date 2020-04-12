@@ -167,12 +167,13 @@ lower bound and use that as the percentage. Use this [calculator][] to work out 
 interval.
 
 Example:
+| Field | Value | Note |
+| --- | --- | --- |
 | Confidence Level | `99.99999` | Click compute |
 | Numerator (x) | `10000 / 3 * 2 = 6666` | Round down |
 | Denominator (N) | `10000` | Click compute
-| Proportion (x/N) | `0.6666` | This what we expect if is a binomial distribution |
-| Exact Confidence Interval around Proportion | `0.6411` to `0.6914` | This what we expect if is a
-binomial distribution |
+| Proportion (x/N) | `0.6666` | This what we expect if it is a binomial distribution |
+| Exact Confidence Interval around Proportion | `0.6411` to `0.6914` | This what we expect if it is a binomial distribution |
 
 Therefore if we have a generator which generates values using another generator at a ratio of two to
 one then if we see a proportion of at least `0.6411` we can be 99.99999% certain that the true
@@ -188,7 +189,7 @@ It is not supported under the [Lightbend subscription][].
 
 ## License
 
-This project is open source and available under the [Apache License Version 2.0][license].
+This project is open source and is available under the [Apache License Version 2.0][license].
 
 [beforeandafterall]: runner/src/main/scala/com/lightbend/hedgehog/runner/BeforeAndAfterAll.scala
 [beforeandaftereach]: runner/src/main/scala/com/lightbend/hedgehog/runner/BeforeAndAfterEach.scala
