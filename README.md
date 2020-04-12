@@ -18,6 +18,8 @@ libraryDependencies ++= Seq(
 )
 ```
 
+> ⚠️ This has not been published to a public repository yet.
+
 ## Runners
 
 The built in runner in Hedgehog is very primitive ([their words] not ours).
@@ -178,6 +180,16 @@ proportion is indeed `0.6666`.
 
 See [ExceptionGeneratorsSpec][] for and example of how these proportions are used.
 
+## Maintenance
+
+This project is inactive.
+
+It is not supported under the [Lightbend subscription][].
+
+## License
+
+This project is open source and available under the [Apache License Version 2.0][license].
+
 [beforeandafterall]: runner/src/main/scala/com/lightbend/hedgehog/runner/BeforeAndAfterAll.scala
 [beforeandaftereach]: runner/src/main/scala/com/lightbend/hedgehog/runner/BeforeAndAfterEach.scala
 [exceptiongeneratorsspec]: tests/src/test/scala/com/lightbend/hedgehog/generators/ExceptionGeneratorsSpec.scala
@@ -186,6 +198,8 @@ See [ExceptionGeneratorsSpec][] for and example of how these proportions are use
 [generators]: core/src/main/scala/com/lightbend/hedgehog/generators
 [generator tests]: tests/src/test/scala/com/lightbend/hedgehog/generators/CharGeneratorsSpec.scala
 [hedgehogframework]: sbt/src/main/scala/com/lightbend/hedgehog/sbt/HedgehogFramework.scala 
+[license]: LICENSE
+[lightbend subscription]: https://www.lightbend.com/subscription
 [probabilities]: testkit/src/main/scala/com/lightbend/hedgehog/testkit/Probabilities.scala
 [sbt framework]: #sbt-framework
 [scala hedgehog]: https://github.com/hedgehogqa/scala-hedgehog
